@@ -92,6 +92,7 @@
     <Content Include="er.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\glch.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Release\" />
