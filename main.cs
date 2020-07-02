@@ -19,6 +19,7 @@ namespace Libriray
         private DataSet myDataSet;
         BindingSource bs1 = new BindingSource();
         Control tb;
+        //string ds[];
 
         const int Margin = 26;
         const int tbstart_pos = 15;
@@ -76,21 +77,21 @@ namespace Libriray
 
         Dictionary<string, Control[]> insertElements = new Dictionary<string, Control[]>
         {
-            {"pub", new Control[] { new TextBox() {}, new ComboBox(), new ComboBox(), new ComboBox() } },
-            {"give_pub", new Control[] { new ComboBox(), new ComboBox(), new ComboBox(), new TextBox(), new DateTimePicker() } },
-            {"return_pub", new Control[] { new ComboBox(), new ComboBox(), new ComboBox(), new TextBox(), new DateTimePicker()} },
-            {"rcpnt", new Control[] { new TextBox(), new TextBox() { }, new TextBox(), new ComboBox() } },
-            {"num_of_pub", new Control[] { new ComboBox(), new TextBox()} },
-            {"pub_spec", new Control[] { new TextBox(), new ComboBox() {} } },
+            {"pub", new Control[] { new TextBox() {}, new ComboBox() {Name = "c" }, new ComboBox() { Name = "c" }, new ComboBox() { Name = "c" } } },
+            {"give_pub", new Control[] { new ComboBox() { Name = "c" }, new ComboBox() { Name = "c" }, new ComboBox() { Name = "c" }, new TextBox(), new DateTimePicker() } },
+            {"return_pub", new Control[] { new ComboBox() { Name = "c" }, new ComboBox() { Name = "c" }, new ComboBox() { Name = "c" }, new TextBox(), new DateTimePicker()} },
+            {"rcpnt", new Control[] { new TextBox(), new TextBox() { }, new TextBox(), new ComboBox() { Name = "c" } } },
+            {"num_of_pub", new Control[] { new ComboBox() { Name = "c" }, new TextBox()} },
+            {"pub_spec", new Control[] { new TextBox(), new ComboBox() { Name = "c" } } },
             {"type_of_pub", new Control[] { new TextBox() } },
             {"discipline", new Control[] { new TextBox()} },
             {"author", new Control[] { new TextBox(), new TextBox() {}, new TextBox() } },
             {"pstions", new Control[] { new TextBox()} }
         };
 
-        /*Dictionary<string, string[]> insertElements = new Dictionary<string, string[]>
+        Dictionary<string, string[]>  combo_querys= new Dictionary<string, string[]>
         {
-            {"pub",new string[]{ "" } },
+            {"pub",new string[]{ "SELECT last_n, name FROM author", "SELECT name FROM pub_spec", "SELECT name FROM discipline" } },
             {"give_pub",new string[]{ } },
             {"return_pub",new string[]{ } },
             {"rcpnt",new string[]{ } },
@@ -100,7 +101,7 @@ namespace Libriray
             {"discipline",new string[]{ }},
             {"author",new string[]{ }},
             {"pstions", new string[]{ } }
-        };*/
+        };
         
 
 
@@ -215,6 +216,7 @@ namespace Libriray
                 bindingNavigatorDeleteItem.Enabled = true;
                 toolStripButton1.Enabled = true;
 
+                int j = 0;
                 for (int i = 0; i < tabsCaption[tabNames[tabs_combo.SelectedIndex]].Length; i++)
                 {
                     Label lbl = new Label()
@@ -227,13 +229,50 @@ namespace Libriray
                     try
                     {
                         tb = insertElements[tabNames[tabs_combo.SelectedIndex]][i];
-                        tb.Name = "tb" + i;
+                        tb.Name += "tb" + i;
                         tb.Location = new Point(tb_x_pos, tb_pos);
                     }
                     catch
                     {
 
                     }
+
+                    if (tb.Name.StartsWith("c"))
+                    {
+                        conn.Open();
+                        myOleDbCommand = new OleDbCommand(combo_querys[tabNames[tabs_combo.SelectedIndex]][j], conn);
+                        myDataAdapter.SelectCommand = myOleDbCommand;
+                        myDataSet = new DataSet();
+                        myDataAdapter.Fill(myDataSet);
+                        myDataAdapter.Update(myDataSet);
+
+                        string[] ds = new string[myDataSet.Tables[0].Rows.Count];
+
+                        for (int f = 0; f < myDataSet.Tables[0].Rows.Count; f++)
+                        {
+                            try
+                            {
+                                ds[i] = myDataSet.Tables[0].Rows[i][0].ToString() + " " + myDataSet.Tables[0].Rows[i][0].ToString();
+                            }
+                            catch
+                            {
+                                ds[i] = myDataSet.Tables[0].Rows[i][0].ToString();
+                            }
+
+                            Console.WriteLine(ds[i]);
+
+                        }
+
+                        Binding d = new Binding("DataSource", ds,ds.ToString());
+                        tb.DataBindings.Add(d);
+
+                        //d = new Binding("DisplayMember", myDataSet, myDataSet.Tables[0].ToString());
+
+
+                        conn.Close();
+                        j++;
+                    }
+                    
 
 
                     panel1.Controls.Add(lbl);
@@ -242,6 +281,7 @@ namespace Libriray
                     lb_pos += Margin;
                     tb_pos += Margin;
                 }
+                j = 0;
             }
             else
             {
