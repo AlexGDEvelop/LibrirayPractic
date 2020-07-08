@@ -34,6 +34,7 @@
             this.tabs_combo = new System.Windows.Forms.ToolStripComboBox();
             this.deystv_combo = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.search_box_tb = new System.Windows.Forms.ToolStripTextBox();
             this.dgvnav = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -61,6 +62,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.authorTableAdapter = new Libriray.erDataSetTableAdapters.authorTableAdapter();
             this.strip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvnav)).BeginInit();
             this.dgvnav.SuspendLayout();
@@ -73,7 +75,8 @@
             this.strip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tabs_combo,
             this.deystv_combo,
-            this.toolStripButton2});
+            this.toolStripButton2,
+            this.search_box_tb});
             this.strip.Location = new System.Drawing.Point(0, 0);
             this.strip.Name = "strip";
             this.strip.Size = new System.Drawing.Size(800, 25);
@@ -120,6 +123,13 @@
             this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton2.Text = "toolStripButton2";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+            // 
+            // search_box_tb
+            // 
+            this.search_box_tb.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.search_box_tb.Name = "search_box_tb";
+            this.search_box_tb.Size = new System.Drawing.Size(100, 25);
+            this.search_box_tb.TextChanged += new System.EventHandler(this.search_box_tb_TextChanged);
             // 
             // dgvnav
             // 
@@ -384,6 +394,10 @@
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 12;
             // 
+            // authorTableAdapter
+            // 
+            this.authorTableAdapter.ClearBeforeFill = true;
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -445,6 +459,8 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ToolStripTextBox search_box_tb;
+        private erDataSetTableAdapters.authorTableAdapter authorTableAdapter;
     }
 }
 

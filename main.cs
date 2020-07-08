@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.OleDb;
+using System.Collections;
 
 namespace Libriray
 {
@@ -17,7 +18,10 @@ namespace Libriray
         private OleDbConnection conn;
         private OleDbDataAdapter myDataAdapter;
         private DataSet myDataSet;
+        private DataTable myDt;
         BindingSource bs1 = new BindingSource();
+        ComboBox comboBox;
+        string[] names;
         Control tb;
         //string ds[];
 
@@ -91,12 +95,12 @@ namespace Libriray
 
         Dictionary<string, string[]>  combo_querys= new Dictionary<string, string[]>
         {
-            {"pub",new string[]{ "SELECT last_n, name FROM author", "SELECT name FROM pub_spec", "SELECT name FROM discipline" } },
-            {"give_pub",new string[]{ } },
-            {"return_pub",new string[]{ } },
-            {"rcpnt",new string[]{ } },
-            {"num_of_pub",new string[]{ } },
-            {"pub_spec",new string[]{ } },
+            {"pub",new string[]{ "SELECT last_n + name AS [snam] FROM author", "SELECT DISTINCT name FROM pub_spec", "SELECT DISTINCT name FROM discipline"  } },
+            {"give_pub",new string[]{ "SELECT last_n + name AS [snam] FROM rcpnt", "SELECT name FROM pstions","SELECT name FROM pub"} },
+            {"return_pub",new string[]{ "SELECT last_n + name AS [snam] FROM rcpnt", "SELECT name FROM pstions", "SELECT name FROM pub" } },
+            {"rcpnt",new string[]{ "SELECT name FROM pstions" } },
+            {"num_of_pub",new string[]{  "SELECT name FROM pub"  } },
+            {"pub_spec",new string[]{  "SELECT name FROM type_of_pub"  } },
             {"type_of_pub",new string[]{ } },
             {"discipline",new string[]{ }},
             {"author",new string[]{ }},
@@ -150,8 +154,6 @@ namespace Libriray
 
         private void main_Load(object sender, EventArgs e)
         {
-            Bitmap bitmap1 = Bitmap.FromHicon(SystemIcons.Question.Handle);
-            toolStripButton2.Image = bitmap1;
 
             //bitmap1 = Bitmap.FromResource();
 
@@ -197,6 +199,42 @@ namespace Libriray
 
         void InsertInTab(string who)
         {
+            string query = "INSERT INTO " + who + " (";
+            //myDataSet.Tables[0].Columns[0].ColumnName;
+            string[] qs = new string[myDataSet.Tables[0].Columns.Count];
+            foreach (DataColumn col in myDataSet.Tables[0].Columns)
+            {
+                query += col.ColumnName + ",";
+            }
+
+            foreach (var tb in panel1.Controls)
+            {
+                //qs[panel1.Controls.GetChildIndex(tb)/2] = tb.Text;
+                Console.WriteLine(tb);
+            }
+
+            /*foreach (ComboBox combo in panel1.Controls)
+            {
+                qs[panel1.Controls.GetChildIndex(combo)/2] = combo.SelectedIndex.ToString();
+            }*/
+
+            query = query.Remove(query.Length - 1);
+
+            query += ") VALUES (";
+
+
+            for (int i = 0; i < qs.Length; i++)
+            {
+                query += qs[i] + ",";
+            }
+
+            query = query.Remove(query.Length - 1);
+
+            query += ")";
+
+
+            Console.WriteLine(query);
+
 
         }
 
@@ -239,44 +277,59 @@ namespace Libriray
 
                     if (tb.Name.StartsWith("c"))
                     {
+
+
+                        comboBox = new ComboBox() {  Name = tb.Name, Location = tb.Location };
+                        tb = null;
                         conn.Open();
                         myOleDbCommand = new OleDbCommand(combo_querys[tabNames[tabs_combo.SelectedIndex]][j], conn);
                         myDataAdapter.SelectCommand = myOleDbCommand;
                         myDataSet = new DataSet();
-                        myDataAdapter.Fill(myDataSet);
-                        myDataAdapter.Update(myDataSet);
+                        myDt = new DataTable();
+                        myDataAdapter.Fill(myDataSet,"dt");
+                        myDataAdapter.Update(myDataSet, "dt");
+                        //tb.DataBindings.Clear();
 
                         string[] ds = new string[myDataSet.Tables[0].Rows.Count];
-
+                        BindingList<string> ts =new BindingList<string>();
                         for (int f = 0; f < myDataSet.Tables[0].Rows.Count; f++)
                         {
-                            try
-                            {
-                                ds[i] = myDataSet.Tables[0].Rows[i][0].ToString() + " " + myDataSet.Tables[0].Rows[i][0].ToString();
-                            }
-                            catch
-                            {
-                                ds[i] = myDataSet.Tables[0].Rows[i][0].ToString();
-                            }
 
-                            Console.WriteLine(ds[i]);
+                            ts.Insert(f, myDataSet.Tables[0].Rows[f][0].ToString());
+                            
+                            
 
                         }
+                        //Binding d = new Binding("DataSource", myDataSet, "dt." + combo_querys[tabNames[tabs_combo.SelectedIndex]][1, j], true);
+                        Binding d = new Binding("DataSource",ts, "",true);
+                        //Binding gf = new Binding("DisplayMember", "", "", true);
+                        comboBox.DataSource = ts;
+                       // tb.DataBindings.Add(gf);
+                        //comboBox1.DataSource = ts;
 
-                        Binding d = new Binding("DataSource", ds,ds.ToString());
-                        tb.DataBindings.Add(d);
-
-                        //d = new Binding("DisplayMember", myDataSet, myDataSet.Tables[0].ToString());
-
+                       // comboBox1.DisplayMember = ts;
 
                         conn.Close();
                         j++;
+                        panel1.Controls.Add(comboBox);
                     }
-                    
+
+                    panel1.Controls.Add(tb);
 
 
                     panel1.Controls.Add(lbl);
-                    panel1.Controls.Add(tb);
+
+                    
+                    /*try
+                    {
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                        
+                    }*/
+                   
 
                     lb_pos += Margin;
                     tb_pos += Margin;
@@ -296,5 +349,31 @@ namespace Libriray
         {
             InsertInTab(tabNames[tabs_combo.SelectedIndex]);
         }
-    }
+
+        private void search_box_tb_TextChanged(object sender, EventArgs e)
+        {
+            string query = " ";
+
+            names = new string[myDataSet.Tables[0].Columns.Count];
+            for (int i = 0; i < names.Length; i++)
+            {
+                names[i] = myDataSet.Tables[0].Columns[i].ColumnName;
+
+                if (names.Length == i + 1 | names.Length == 1)
+                {
+                    query += "["+myDataSet.Tables[0].Columns[i].ColumnName + "]" + " LIKE '" + search_box_tb.Text + "%' ";
+                }
+                else
+                {
+                    query += "[" + myDataSet.Tables[0].Columns[i].ColumnName + "]" + " LIKE '" + search_box_tb.Text + "%' OR ";
+                }
+                //query += myDataSet.Tables[0].Columns[i].ColumnName + " LIKE " + search_box_tb.Text +"% OR ";
+            }
+
+
+            bs1.Filter = query;
+        }
+
+        
+    }  
 }
