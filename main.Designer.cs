@@ -420,11 +420,12 @@
             this.Controls.Add(this.dgvnav);
             this.Controls.Add(this.dataGridView);
             this.HelpButton = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.IsMdiContainer = true;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "main";
             this.helpProvider1.SetShowHelp(this, true);
-            this.ShowIcon = false;
             this.Text = "Library";
             this.Load += new System.EventHandler(this.main_Load);
             this.strip.ResumeLayout(false);

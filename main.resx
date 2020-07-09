@@ -205,4 +205,21 @@
   <metadata name="helpProvider1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>633, 17</value>
   </metadata>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAgAIAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
+        AAD///8A////////////////////////////////////////////////////////////////////8AAA
+        AAAAAAAAAP////////D///////////D////////w///////////w////////8AAAAAAAAAAAAP//////
+        //+P/////w94AP////////////////9/D/D///////////gAAAAAjwjw/////////////////w8AAP//
+        ///////wAAAAAAAPD/D/////////+PiPiP+A/4AH//////////+P////+P//////////////BwAAAA/w
+        8I///////////4/////38PgP//////////eIiIiIgPD/D//////////3AAAAAAAAjw//////////////
+        ////Dw8P///////////4AAAAAI8P//////////////////9/D////////////3//////D/f/////////
+        //8AAAAAAAAA//////////////////8P8P//////////////////cAD///////////////////+H////
+        //////////////iP////////////////////AI////////////////////8P////////////////////
+        //////////////////////////////////////////////////+AAAAAgAAAAIAAAACAAAAAgAAAAIAA
+        AACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAA
+        AACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAA/////w==
+</value>
+  </data>
 </root>
