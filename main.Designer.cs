@@ -33,7 +33,6 @@
             this.strip = new System.Windows.Forms.ToolStrip();
             this.tabs_combo = new System.Windows.Forms.ToolStripComboBox();
             this.deystv_combo = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.search_box_tb = new System.Windows.Forms.ToolStripTextBox();
             this.dgvnav = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
@@ -48,8 +47,10 @@
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
@@ -61,8 +62,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.authorTableAdapter = new Libriray.erDataSetTableAdapters.authorTableAdapter();
+            this.helpProvider1 = new System.Windows.Forms.HelpProvider();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.strip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvnav)).BeginInit();
             this.dgvnav.SuspendLayout();
@@ -75,10 +76,10 @@
             this.strip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tabs_combo,
             this.deystv_combo,
-            this.toolStripButton2,
             this.search_box_tb});
             this.strip.Location = new System.Drawing.Point(0, 0);
             this.strip.Name = "strip";
+            this.helpProvider1.SetShowHelp(this.strip, false);
             this.strip.Size = new System.Drawing.Size(800, 25);
             this.strip.TabIndex = 5;
             this.strip.Text = "toolStrip1";
@@ -113,22 +114,12 @@
             this.deystv_combo.ToolTipText = "Выбор действия";
             this.deystv_combo.SelectedIndexChanged += new System.EventHandler(this.deystv_combo_SelectedIndexChanged);
             // 
-            // toolStripButton2
-            // 
-            this.toolStripButton2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton2.Text = "toolStripButton2";
-            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
-            // 
             // search_box_tb
             // 
             this.search_box_tb.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.search_box_tb.Name = "search_box_tb";
             this.search_box_tb.Size = new System.Drawing.Size(100, 25);
+            this.search_box_tb.Text = "Поиск";
             this.search_box_tb.TextChanged += new System.EventHandler(this.search_box_tb_TextChanged);
             // 
             // dgvnav
@@ -150,7 +141,9 @@
             this.bindingNavigatorSeparator2,
             this.bindingNavigatorAddNewItem,
             this.bindingNavigatorDeleteItem,
-            this.toolStripButton1});
+            this.toolStripButton1,
+            this.toolStripButton3,
+            this.toolStripLabel1});
             this.dgvnav.Location = new System.Drawing.Point(0, 425);
             this.dgvnav.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.dgvnav.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -188,6 +181,7 @@
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 22);
             this.bindingNavigatorDeleteItem.Text = "Удалить";
+            this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
             // 
             // bindingNavigatorMoveFirstItem
             // 
@@ -262,6 +256,16 @@
             this.toolStripButton1.ToolTipText = "Подтвердить добавление";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton3.Image = global::Libriray.Properties.Resources.save;
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton3.Text = "Сгененрировать отчет";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
             // dataGridView
             // 
             this.dataGridView.AllowUserToAddRows = false;
@@ -290,6 +294,14 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(282, 180);
             this.panel1.TabIndex = 7;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(128, 92);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 12;
             // 
             // textBox5
             // 
@@ -386,17 +398,16 @@
             this.label1.Text = "label1";
             this.label1.Visible = false;
             // 
-            // comboBox1
+            // helpProvider1
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(128, 92);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 12;
+            this.helpProvider1.HelpNamespace = "C:\\Users\\ИВАН\\source\\repos\\Libriray\\Resources\\help.chm";
             // 
-            // authorTableAdapter
+            // toolStripLabel1
             // 
-            this.authorTableAdapter.ClearBeforeFill = true;
+            this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(220, 22);
+            this.toolStripLabel1.Text = "Нажмите F1 для отобржаения справки";
             // 
             // main
             // 
@@ -408,8 +419,11 @@
             this.Controls.Add(this.strip);
             this.Controls.Add(this.dgvnav);
             this.Controls.Add(this.dataGridView);
+            this.HelpButton = true;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "main";
+            this.helpProvider1.SetShowHelp(this, true);
             this.ShowIcon = false;
             this.Text = "Library";
             this.Load += new System.EventHandler(this.main_Load);
@@ -431,7 +445,6 @@
         private System.Windows.Forms.ToolStrip strip;
         private System.Windows.Forms.ToolStripComboBox tabs_combo;
         private System.Windows.Forms.ToolStripComboBox deystv_combo;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.BindingNavigator dgvnav;
         private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
         private System.Windows.Forms.ToolStripLabel bindingNavigatorCountItem;
@@ -460,7 +473,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.ToolStripTextBox search_box_tb;
-        private erDataSetTableAdapters.authorTableAdapter authorTableAdapter;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.HelpProvider helpProvider1;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
     }
 }
 

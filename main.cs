@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.OleDb;
 using System.Collections;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Libriray
 {
@@ -16,8 +17,9 @@ namespace Libriray
     {
         public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=er.mdb;";
         private OleDbConnection conn;
-        private OleDbDataAdapter myDataAdapter;
-        private DataSet myDataSet;
+        private OleDbDataAdapter myDataAdapter,dA;
+        private DataSet myDataSet,comboDataSet,dataSet;
+        string[] qs;
         private DataTable myDt;
         BindingSource bs1 = new BindingSource();
         ComboBox comboBox;
@@ -159,6 +161,7 @@ namespace Libriray
 
             conn = new OleDbConnection(connectionString);
             myDataAdapter = new OleDbDataAdapter();
+            dA = new OleDbDataAdapter();
 
             panel1.Visible = false;
 
@@ -182,6 +185,7 @@ namespace Libriray
             bs1 = new BindingSource(myDataSet, myDataSet.Tables[0].ToString());
             dataGridView.DataSource = bs1;
             myDataAdapter.Update(myDataSet);
+            qs = new string[myDataSet.Tables[0].Columns.Count];
             dgvnav.BindingSource = bs1;
 
             conn.Close();
@@ -201,18 +205,22 @@ namespace Libriray
         {
             string query = "INSERT INTO " + who + " (";
             //myDataSet.Tables[0].Columns[0].ColumnName;
-            string[] qs = new string[myDataSet.Tables[0].Columns.Count];
-            foreach (DataColumn col in myDataSet.Tables[0].Columns)
+
+
+            conn.Open();
+            myOleDbCommand = new OleDbCommand("SELECT * FROM " + who, conn);
+            dA.SelectCommand = myOleDbCommand;
+            dataSet = new DataSet();
+            dA.Fill(dataSet);
+            conn.Close();
+
+            foreach (DataColumn col in dataSet.Tables[0].Columns)
             {
                 query += col.ColumnName + ",";
             }
 
-            foreach (var tb in panel1.Controls)
-            {
-                //qs[panel1.Controls.GetChildIndex(tb)/2] = tb.Text;
-                Console.WriteLine(tb);
-            }
-
+            ComboBox[] combo = panel1.Controls.OfType<ComboBox>().ToArray();
+            TextBox[] tb = panel1.Controls.OfType<TextBox>().ToArray();
             /*foreach (ComboBox combo in panel1.Controls)
             {
                 qs[panel1.Controls.GetChildIndex(combo)/2] = combo.SelectedIndex.ToString();
@@ -222,7 +230,41 @@ namespace Libriray
 
             query += ") VALUES (";
 
+            //string s = "jooj";
 
+            //string s2 = s.Substring(s.Length - 2);
+
+
+            foreach(ComboBox comb in combo)
+            {
+
+                //MessageBox.Show(comb.Name.Substring(comb.Name.Length - 1));
+                if (comb.Items.Count != 0)
+                {
+                    qs[int.Parse(comb.Name.Substring(comb.Name.Length - 1))] = (comb.SelectedIndex + 1).ToString();
+                }
+                else
+                {
+                    MessageBox.Show("В одной из таблиц подстановки нет значений","Внимание");
+                    return;
+                }
+
+            }
+
+            foreach(TextBox text in tb)
+            {
+                if (text.Text != "")
+                {
+                    qs[int.Parse(text.Name.Substring(text.Name.Length - 1))] = "'" + text.Text + "'";
+                }
+                else
+                {
+                    MessageBox.Show("Все поля должны быть заполнены", "Внимане");
+                }
+                
+            }
+
+            query += (dataSet.Tables[0].Rows.Count + 1).ToString() + ",";
             for (int i = 0; i < qs.Length; i++)
             {
                 query += qs[i] + ",";
@@ -233,9 +275,61 @@ namespace Libriray
             query += ")";
 
 
+            conn.Open();
+            myOleDbCommand = new OleDbCommand(query, conn);
+            myDataAdapter.SelectCommand = myOleDbCommand;
+            dataSet = new DataSet();
+            myDataAdapter.Fill(dataSet);
+            myDataAdapter.Update(myDataSet);
+            conn.Close();
+
+            ViewTab(who);
+
+
             Console.WriteLine(query);
 
 
+        }
+
+        private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
+        {
+
+            conn.Open();
+            myOleDbCommand = new OleDbCommand("SELECT * FROM " + tabNames[tabs_combo.SelectedIndex], conn);
+            dA.SelectCommand = myOleDbCommand;
+            dataSet = new DataSet();
+            dA.Fill(dataSet);
+            conn.Close();
+
+            string query = string.Format("DELETE FROM {0} WHERE {1}={2}", tabNames[tabs_combo.SelectedIndex],dataSet.Tables[0].Columns[0].ColumnName,dataGridView.CurrentRow.Index + 2);
+
+            conn.Open();
+            myOleDbCommand = new OleDbCommand(query, conn);
+            myDataAdapter.DeleteCommand = myOleDbCommand;
+            dataSet = new DataSet();
+
+            myDataAdapter.Fill(dataSet);
+
+            try
+            {
+                myDataAdapter.Update(myDataSet);
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Ошибка");
+
+                
+            }
+
+            conn.Close();
+
+            ViewTab(tabNames[tabs_combo.SelectedIndex]);
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            OtchGen gen = new OtchGen();
+            gen.Otchgen(dataGridView, tabNames[tabs_combo.SelectedIndex]);
         }
 
         private void deystv_combo_SelectedIndexChanged(object sender, EventArgs e)
@@ -284,18 +378,18 @@ namespace Libriray
                         conn.Open();
                         myOleDbCommand = new OleDbCommand(combo_querys[tabNames[tabs_combo.SelectedIndex]][j], conn);
                         myDataAdapter.SelectCommand = myOleDbCommand;
-                        myDataSet = new DataSet();
+                        comboDataSet = new DataSet();
                         myDt = new DataTable();
-                        myDataAdapter.Fill(myDataSet,"dt");
-                        myDataAdapter.Update(myDataSet, "dt");
+                        myDataAdapter.Fill(comboDataSet, "dt");
+                        myDataAdapter.Update(comboDataSet, "dt");
                         //tb.DataBindings.Clear();
 
-                        string[] ds = new string[myDataSet.Tables[0].Rows.Count];
+                        string[] ds = new string[comboDataSet.Tables[0].Rows.Count];
                         BindingList<string> ts =new BindingList<string>();
-                        for (int f = 0; f < myDataSet.Tables[0].Rows.Count; f++)
+                        for (int f = 0; f < comboDataSet.Tables[0].Rows.Count; f++)
                         {
 
-                            ts.Insert(f, myDataSet.Tables[0].Rows[f][0].ToString());
+                            ts.Insert(f, comboDataSet.Tables[0].Rows[f][0].ToString());
                             
                             
 
@@ -376,4 +470,54 @@ namespace Libriray
 
         
     }  
+
+    public class OtchGen
+    {
+        Excel.Application excelapp;
+        Excel.Workbook workbook;
+        Excel.Worksheet worksheet;
+        public void Otchgen(DataGridView grid, string who)
+        {
+
+            MessageBox.Show("Производится сохранение, не выключайте программу.\n По завершению, появится сообщение 'Готово'", "Сохранение");
+            string path = System.IO.Directory.GetCurrentDirectory() + @"\" + "Save_" + who + "_" + DateTime.Now.ToShortDateString() + ".xlsx";
+
+            ExcelStart();
+
+
+            for (int i = 0; i < grid.RowCount; i++)
+            {
+
+                for (int j = 0; j < grid.ColumnCount; j++)
+                {
+                    worksheet.Rows[1].Columns[j + 1] = grid.Columns[j].Name;
+                    worksheet.Rows[i + 2].Columns[j + 1] = grid.Rows[i].Cells[j].Value;
+
+                }
+            }
+            ExcelSaveAndExit(path);
+
+            MessageBox.Show("Готово", "Сохранено");
+
+        }
+
+
+
+
+        void ExcelStart()
+        {
+
+            excelapp = new Excel.Application();
+            workbook = excelapp.Workbooks.Add();
+            worksheet = workbook.ActiveSheet;
+        }
+
+        void ExcelSaveAndExit(string path)
+        {
+            excelapp.AlertBeforeOverwriting = false;
+            workbook.SaveAs(path);
+            excelapp.Quit();
+
+        }
+    }
 }
