@@ -48,6 +48,7 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -63,7 +64,6 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.helpProvider1 = new System.Windows.Forms.HelpProvider();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.strip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvnav)).BeginInit();
             this.dgvnav.SuspendLayout();
@@ -266,6 +266,13 @@
             this.toolStripButton3.Text = "Сгененрировать отчет";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(220, 22);
+            this.toolStripLabel1.Text = "Нажмите F1 для отобржаения справки";
+            // 
             // dataGridView
             // 
             this.dataGridView.AllowUserToAddRows = false;
@@ -400,14 +407,7 @@
             // 
             // helpProvider1
             // 
-            this.helpProvider1.HelpNamespace = "C:\\Users\\ИВАН\\source\\repos\\Libriray\\Resources\\help.chm";
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(220, 22);
-            this.toolStripLabel1.Text = "Нажмите F1 для отобржаения справки";
+            this.helpProvider1.HelpNamespace = "help.chm";
             // 
             // main
             // 
@@ -420,6 +420,7 @@
             this.Controls.Add(this.dgvnav);
             this.Controls.Add(this.dataGridView);
             this.HelpButton = true;
+            this.helpProvider1.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.KeywordIndex);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.KeyPreview = true;

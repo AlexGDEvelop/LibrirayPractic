@@ -4,11 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.OleDb;
-using System.Collections;
+
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Libriray
@@ -25,21 +23,14 @@ namespace Libriray
         ComboBox comboBox;
         string[] names;
         Control tb;
-        //string ds[];
-
         const int Margin = 26;
         const int tbstart_pos = 15;
         int tb_pos = 0;
-
         const int lb_start_pos = 18;
         int lb_pos = 0;
-
         const int lb_x_pos = 12;
         const int tb_x_pos = 128;
-
-
         OleDbCommand myOleDbCommand;
-
         Dictionary<string, string> selecQuerys = new Dictionary<string, string>
         {
             { "pub", "SELECT pub.name AS [Название издания], author.name AS [Имя автора], author.last_n AS [Фамилия автора], pub_spec.name AS [Вид издания], discipline.name AS [Дисциплина] " +
@@ -65,22 +56,6 @@ namespace Libriray
                 " FROM pstions;" },
         };
 
-        Dictionary<string, string> comboQuerys = new Dictionary<string, string>
-        {
-            {"pub","" },
-            {"give_pub","" },
-            {"return_pub","" },
-            {"rcpnt","" },
-            {"num_of_pub","" },
-            {"pub_spec","" },
-            {"type_of_pub","" },
-            {"discipline","" },
-            {"author","" },
-            {"pstions","" }
-        };
-
-
-
         Dictionary<string, Control[]> insertElements = new Dictionary<string, Control[]>
         {
             {"pub", new Control[] { new TextBox() {}, new ComboBox() {Name = "c" }, new ComboBox() { Name = "c" }, new ComboBox() { Name = "c" } } },
@@ -102,11 +77,7 @@ namespace Libriray
             {"return_pub",new string[]{ "SELECT last_n + name AS [snam] FROM rcpnt", "SELECT name FROM pstions", "SELECT name FROM pub" } },
             {"rcpnt",new string[]{ "SELECT name FROM pstions" } },
             {"num_of_pub",new string[]{  "SELECT name FROM pub"  } },
-            {"pub_spec",new string[]{  "SELECT name FROM type_of_pub"  } },
-            {"type_of_pub",new string[]{ } },
-            {"discipline",new string[]{ }},
-            {"author",new string[]{ }},
-            {"pstions", new string[]{ } }
+            {"pub_spec",new string[]{  "SELECT name FROM type_of_pub"  } }
         };
         
 
@@ -125,21 +96,6 @@ namespace Libriray
             {"pstions",new string[] { "Должность"}}
         };
 
-
-        Dictionary<string, string> insertQuerys = new Dictionary<string, string>
-        {
-            {"pub","" },
-            {"give_pub","" },
-            {"return_pub","" },
-            {"rcpnt","" },
-            {"num_of_pub","" },
-            {"pub_spec","" },
-            {"type_of_pub","" },
-            {"discipline","" },
-            {"author","" },
-            {"pstions","" }
-        };
-
         string[] tabNames = new string[10] { "pub","give_pub","return_pub","rcpnt","num_of_pub","pub_spec","type_of_pub","discipline","author","pstions" };
 
 
@@ -147,11 +103,6 @@ namespace Libriray
         public main()
         {
             InitializeComponent();
-        }
-
-        private void toolStripButton2_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void main_Load(object sender, EventArgs e)
@@ -204,7 +155,7 @@ namespace Libriray
         void InsertInTab(string who)
         {
             string query = "INSERT INTO " + who + " (";
-            //myDataSet.Tables[0].Columns[0].ColumnName;
+
 
 
             conn.Open();
@@ -221,24 +172,15 @@ namespace Libriray
 
             ComboBox[] combo = panel1.Controls.OfType<ComboBox>().ToArray();
             TextBox[] tb = panel1.Controls.OfType<TextBox>().ToArray();
-            /*foreach (ComboBox combo in panel1.Controls)
-            {
-                qs[panel1.Controls.GetChildIndex(combo)/2] = combo.SelectedIndex.ToString();
-            }*/
+
 
             query = query.Remove(query.Length - 1);
 
             query += ") VALUES (";
 
-            //string s = "jooj";
-
-            //string s2 = s.Substring(s.Length - 2);
-
 
             foreach(ComboBox comb in combo)
             {
-
-                //MessageBox.Show(comb.Name.Substring(comb.Name.Length - 1));
                 if (comb.Items.Count != 0)
                 {
                     qs[int.Parse(comb.Name.Substring(comb.Name.Length - 1))] = (comb.SelectedIndex + 1).ToString();
@@ -338,8 +280,6 @@ namespace Libriray
             if (deystv_combo.SelectedIndex == 1)
             {
                 panel1.Visible = true;
-                //Добавление записей на панель
-
                 lb_pos = lb_start_pos;
                 tb_pos = tbstart_pos;
                 panel1.Controls.Clear();
@@ -382,7 +322,6 @@ namespace Libriray
                         myDt = new DataTable();
                         myDataAdapter.Fill(comboDataSet, "dt");
                         myDataAdapter.Update(comboDataSet, "dt");
-                        //tb.DataBindings.Clear();
 
                         string[] ds = new string[comboDataSet.Tables[0].Rows.Count];
                         BindingList<string> ts =new BindingList<string>();
@@ -394,14 +333,11 @@ namespace Libriray
                             
 
                         }
-                        //Binding d = new Binding("DataSource", myDataSet, "dt." + combo_querys[tabNames[tabs_combo.SelectedIndex]][1, j], true);
-                        Binding d = new Binding("DataSource",ts, "",true);
-                        //Binding gf = new Binding("DisplayMember", "", "", true);
-                        comboBox.DataSource = ts;
-                       // tb.DataBindings.Add(gf);
-                        //comboBox1.DataSource = ts;
 
-                       // comboBox1.DisplayMember = ts;
+                        Binding d = new Binding("DataSource",ts, "",true);
+
+                        comboBox.DataSource = ts;
+
 
                         conn.Close();
                         j++;
@@ -410,20 +346,7 @@ namespace Libriray
 
                     panel1.Controls.Add(tb);
 
-
                     panel1.Controls.Add(lbl);
-
-                    
-                    /*try
-                    {
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                        
-                    }*/
-                   
 
                     lb_pos += Margin;
                     tb_pos += Margin;
@@ -461,14 +384,10 @@ namespace Libriray
                 {
                     query += "[" + myDataSet.Tables[0].Columns[i].ColumnName + "]" + " LIKE '" + search_box_tb.Text + "%' OR ";
                 }
-                //query += myDataSet.Tables[0].Columns[i].ColumnName + " LIKE " + search_box_tb.Text +"% OR ";
             }
-
 
             bs1.Filter = query;
         }
-
-        
     }  
 
     public class OtchGen
@@ -500,10 +419,6 @@ namespace Libriray
             MessageBox.Show("Готово", "Сохранено");
 
         }
-
-
-
-
         void ExcelStart()
         {
 
